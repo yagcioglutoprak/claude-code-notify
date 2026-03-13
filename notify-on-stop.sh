@@ -87,7 +87,7 @@ fi
         -title "Claude Code" \
         -subtitle "Response complete" \
         -message "$message" \
-        -appIcon "/Applications/Claude.app/Contents/Resources/AppIcon.icns" \
+        -appIcon "$HOME/.claude/hooks/icon.png" \
         -sound "$SOUND" \
         -group "claude-code-notify" \
         2>/dev/null
@@ -102,7 +102,7 @@ fi
         -title "Claude Code" \
         -subtitle "Response complete" \
         -message "$message" \
-        -appIcon "/Applications/Claude.app/Contents/Resources/AppIcon.icns" \
+        -appIcon "$HOME/.claude/hooks/icon.png" \
         -group "claude-code-notify" \
         2>/dev/null
     else

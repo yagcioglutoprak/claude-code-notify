@@ -28,8 +28,9 @@ fi
 mkdir -p "$HOOKS_DIR"
 mkdir -p "$HOME/.claude"
 
-# Copy hook script
+# Copy hook script and icon
 cp "$SCRIPT_DIR/notify-on-stop.sh" "$HOOKS_DIR/notify-on-stop.sh"
+cp "$SCRIPT_DIR/icon.png" "$HOOKS_DIR/icon.png"
 chmod +x "$HOOKS_DIR/notify-on-stop.sh"
 
 # Copy config only if not already present (preserve user settings)
