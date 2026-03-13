@@ -40,9 +40,9 @@ fi
 
   # Skip if terminal is focused
   if [ "$ONLY_WHEN_UNFOCUSED" = true ]; then
-    frontmost=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null)
+    frontmost=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null | tr '[:upper:]' '[:lower:]')
     case "$frontmost" in
-      Terminal|iTerm2|iTerm|Alacritty|kitty|WezTerm|Hyper|Warp|Ghostty)
+      terminal|iterm2|iterm|alacritty|kitty|wezterm|hyper|warp|ghostty)
         rm -f "$PID_FILE"
         exit 0
         ;;
