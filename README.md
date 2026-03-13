@@ -23,7 +23,8 @@ Other notification tools require Go binaries, Rust compilation, or dozens of con
 | Dependencies | `jq` (likely already installed) | Go / Rust / Node.js runtimes |
 | Size | Single bash script | Full binary or multi-file projects |
 | Debounce | Built-in (no false pings mid-response) | Most lack this |
-| Config | One file, 3 options | YAML/TOML/JSON configs |
+| Focus detection | Skips notification if terminal is focused | Not available |
+| Config | One file, 4 options | YAML/TOML/JSON configs |
 
 ## Install
 
@@ -46,6 +47,10 @@ SOUND=Ping
 
 # Seconds to wait after last stop before notifying
 DEBOUNCE=3
+
+# Skip notification if terminal is focused (default: true)
+# Detects: Terminal, iTerm2, Alacritty, kitty, WezTerm, Hyper, Warp, Ghostty
+ONLY_WHEN_UNFOCUSED=true
 ```
 
 | Mode | What you get |
@@ -59,6 +64,8 @@ DEBOUNCE=3
 Claude Code fires a `Stop` hook every time the model pauses — including between tool calls. A naive hook would ping you dozens of times per response.
 
 This hook uses **debounce**: each Stop event cancels the previous pending notification and starts a new timer. The notification only fires after `DEBOUNCE` seconds of silence, meaning Claude is truly done.
+
+It also detects whether your terminal is the frontmost app. If you're already looking at Claude Code, it stays silent. Notifications only fire when you've tabbed away.
 
 ## Uninstall
 

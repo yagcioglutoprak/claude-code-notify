@@ -3,6 +3,7 @@
 # Claude Code Stop Notification Hook
 # Plays a sound / shows a banner when Claude finishes responding.
 # Uses debounce to ignore intermediate stops between tool calls.
+# Skips notification if the terminal is already focused.
 
 CONFIG_FILE="$HOME/.claude/hooks/notify.conf"
 PID_FILE="/tmp/claude-notify-debounce.pid"
@@ -11,6 +12,7 @@ PID_FILE="/tmp/claude-notify-debounce.pid"
 MODE="sound"
 SOUND="Ping"
 DEBOUNCE=3
+ONLY_WHEN_UNFOCUSED=true
 
 # Load user config
 if [ -f "$CONFIG_FILE" ]; then
@@ -35,6 +37,17 @@ fi
 (
   echo $$ > "$PID_FILE"
   sleep "$DEBOUNCE"
+
+  # Skip if terminal is focused
+  if [ "$ONLY_WHEN_UNFOCUSED" = true ]; then
+    frontmost=$(osascript -e 'tell application "System Events" to get name of first application process whose frontmost is true' 2>/dev/null)
+    case "$frontmost" in
+      Terminal|iTerm2|iTerm|Alacritty|kitty|WezTerm|Hyper|Warp|Ghostty)
+        rm -f "$PID_FILE"
+        exit 0
+        ;;
+    esac
+  fi
 
   case "$MODE" in
     sound)
