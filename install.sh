@@ -58,6 +58,59 @@ else
   mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
 fi
 
+# Enable notifications for terminal-notifier in macOS
+if command -v terminal-notifier &>/dev/null; then
+  # Send a test notification to register with Notification Center
+  terminal-notifier \
+    -title "Claude Code Notify" \
+    -subtitle "Setup complete" \
+    -message "You'll be notified when Claude finishes responding." \
+    -appIcon "$HOOKS_DIR/icon.png" \
+    -sound "Ping" \
+    2>/dev/null
+
+  # Auto-enable notifications via defaults
+  BUNDLE_ID="nl.superalloy.oss.terminal-notifier"
+  # Get current flags (if any) and ensure alerts are enabled
+  defaults write com.apple.notificationcenterui bannerStyle -int 1 2>/dev/null || true
+  # Set notification style to Alerts (persistent) for terminal-notifier
+  NCPREFS="$HOME/Library/Preferences/com.apple.ncprefs.plist"
+  if [ -f "$NCPREFS" ]; then
+    # Use plutil to check if we can modify notification preferences
+    python3 -c "
+import plistlib, sys
+prefs_path = '$NCPREFS'
+try:
+    with open(prefs_path, 'rb') as f:
+        prefs = plistlib.load(f)
+    apps = prefs.get('apps', [])
+    found = False
+    for app in apps:
+        bid = app.get('bundle-id', '')
+        if bid == '$BUNDLE_ID':
+            app['flags'] = app.get('flags', 0) | 0x4000  # Enable notifications
+            found = True
+            break
+    if not found:
+        apps.append({
+            'bundle-id': '$BUNDLE_ID',
+            'flags': 0x4000 | 0x8,  # Enabled + banners
+        })
+        prefs['apps'] = apps
+    with open(prefs_path, 'wb') as f:
+        plistlib.dump(prefs, f)
+except Exception as e:
+    pass  # Silently fail — user can enable manually
+" 2>/dev/null || true
+    # Restart notification center to pick up changes
+    killall NotificationCenter 2>/dev/null || true
+  fi
+
+  echo ""
+  echo "If you don't see the test notification above, enable notifications:"
+  echo "  System Settings > Notifications > terminal-notifier > Allow Notifications"
+fi
+
 echo ""
 echo "Done! Restart Claude Code to activate."
 echo ""
