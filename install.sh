@@ -7,8 +7,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Installing claude-code-notify..."
 
-# Create hooks directory
+# Ensure jq is available
+if ! command -v jq &>/dev/null; then
+  echo "Error: jq is required. Install it with: brew install jq"
+  exit 1
+fi
+
+# Create directories
 mkdir -p "$HOOKS_DIR"
+mkdir -p "$HOME/.claude"
 
 # Copy hook script
 cp "$SCRIPT_DIR/notify-on-stop.sh" "$HOOKS_DIR/notify-on-stop.sh"
@@ -17,55 +24,35 @@ chmod +x "$HOOKS_DIR/notify-on-stop.sh"
 # Copy config only if not already present (preserve user settings)
 if [ ! -f "$HOOKS_DIR/notify.conf" ]; then
   cp "$SCRIPT_DIR/notify.conf" "$HOOKS_DIR/notify.conf"
-  echo "Created config at $HOOKS_DIR/notify.conf"
-else
-  echo "Config already exists at $HOOKS_DIR/notify.conf (kept existing)"
 fi
 
-# Add hook to settings.json
+# Auto-inject hook into settings.json
+HOOK_ENTRY='{"hooks":[{"type":"command","command":"~/.claude/hooks/notify-on-stop.sh"}]}'
+
 if [ ! -f "$SETTINGS_FILE" ]; then
-  cat > "$SETTINGS_FILE" << 'EOF'
-{
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify-on-stop.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-EOF
-  echo "Created $SETTINGS_FILE with Stop hook"
+  # No settings file — create one
+  echo "{}" | jq --argjson hook "$HOOK_ENTRY" '.hooks.Stop = [$hook]' > "$SETTINGS_FILE"
+elif grep -q "notify-on-stop" "$SETTINGS_FILE" 2>/dev/null; then
+  echo "Hook already configured — skipping settings.json"
 else
-  # Check if hook is already configured
-  if grep -q "notify-on-stop" "$SETTINGS_FILE" 2>/dev/null; then
-    echo "Hook already configured in $SETTINGS_FILE"
+  # Merge into existing settings
+  if jq -e '.hooks.Stop' "$SETTINGS_FILE" &>/dev/null; then
+    # Stop hooks array exists — append to it
+    jq --argjson hook "$HOOK_ENTRY" '.hooks.Stop += [$hook]' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
+  elif jq -e '.hooks' "$SETTINGS_FILE" &>/dev/null; then
+    # hooks object exists but no Stop — add Stop
+    jq --argjson hook "$HOOK_ENTRY" '.hooks.Stop = [$hook]' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
   else
-    echo ""
-    echo "Add the following to your $SETTINGS_FILE under \"hooks\":"
-    echo ""
-    echo '  "hooks": {'
-    echo '    "Stop": ['
-    echo '      {'
-    echo '        "hooks": ['
-    echo '          {'
-    echo '            "type": "command",'
-    echo '            "command": "~/.claude/hooks/notify-on-stop.sh"'
-    echo '          }'
-    echo '        ]'
-    echo '      }'
-    echo '    ]'
-    echo '  }'
-    echo ""
-    echo "Or run: claude-code-notify --inject to auto-add it."
+    # No hooks at all — add hooks object
+    jq --argjson hook "$HOOK_ENTRY" '.hooks = {"Stop": [$hook]}' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
   fi
+  mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
 fi
 
 echo ""
 echo "Done! Restart Claude Code to activate."
-echo "Edit $HOOKS_DIR/notify.conf to customize (sound, banner, debounce)."
+echo ""
+echo "Config: $HOOKS_DIR/notify.conf"
+echo "  MODE=sound|banner|both  (default: sound)"
+echo "  SOUND=Ping|Glass|Pop|Hero|...  (default: Ping)"
+echo "  DEBOUNCE=3  (seconds, default: 3)"

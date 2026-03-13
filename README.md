@@ -4,37 +4,17 @@ Get notified when Claude Code finishes responding. Sound, notification banner, o
 
 Uses Claude Code's [hooks system](https://docs.anthropic.com/en/docs/claude-code/hooks) to detect when a response is complete, with debounce to avoid false triggers during intermediate tool calls.
 
-**macOS only** (uses `afplay` and `osascript`).
+**macOS only** (uses `afplay` and `osascript`). Requires `jq` (`brew install jq`).
 
 ## Install
 
+One command. That's it.
+
 ```bash
-git clone https://github.com/toprakyagcioglu/claude-code-notify.git
-cd claude-code-notify
-chmod +x install.sh
-./install.sh
+git clone https://github.com/yagcioglutoprak/claude-code-notify.git /tmp/claude-code-notify && /tmp/claude-code-notify/install.sh && rm -rf /tmp/claude-code-notify
 ```
 
-Then add the hook to your `~/.claude/settings.json`:
-
-```json
-{
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/notify-on-stop.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-Restart Claude Code.
+Restart Claude Code and you'll hear a ping every time Claude finishes.
 
 ## Configure
 
@@ -67,11 +47,10 @@ This hook uses **debounce**: each Stop event cancels the previous pending notifi
 ## Uninstall
 
 ```bash
-chmod +x uninstall.sh
-./uninstall.sh
+git clone https://github.com/yagcioglutoprak/claude-code-notify.git /tmp/claude-code-notify && /tmp/claude-code-notify/uninstall.sh && rm -rf /tmp/claude-code-notify
 ```
 
-Then remove the `Stop` hook entry from `~/.claude/settings.json`.
+Removes the script, config, and hook entry from `settings.json` automatically.
 
 ## License
 
