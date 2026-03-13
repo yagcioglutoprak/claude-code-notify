@@ -13,6 +13,17 @@ if ! command -v jq &>/dev/null; then
   exit 1
 fi
 
+# Install terminal-notifier for rich notifications (optional but recommended)
+if ! command -v terminal-notifier &>/dev/null; then
+  if command -v brew &>/dev/null; then
+    echo "Installing terminal-notifier for rich notification banners..."
+    brew install terminal-notifier
+  else
+    echo "Note: Install terminal-notifier for rich banners (brew install terminal-notifier)"
+    echo "Falling back to basic osascript notifications."
+  fi
+fi
+
 # Create directories
 mkdir -p "$HOOKS_DIR"
 mkdir -p "$HOME/.claude"
@@ -37,13 +48,10 @@ elif grep -q "notify-on-stop" "$SETTINGS_FILE" 2>/dev/null; then
 else
   # Merge into existing settings
   if jq -e '.hooks.Stop' "$SETTINGS_FILE" &>/dev/null; then
-    # Stop hooks array exists — append to it
     jq --argjson hook "$HOOK_ENTRY" '.hooks.Stop += [$hook]' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
   elif jq -e '.hooks' "$SETTINGS_FILE" &>/dev/null; then
-    # hooks object exists but no Stop — add Stop
     jq --argjson hook "$HOOK_ENTRY" '.hooks.Stop = [$hook]' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
   else
-    # No hooks at all — add hooks object
     jq --argjson hook "$HOOK_ENTRY" '.hooks = {"Stop": [$hook]}' "$SETTINGS_FILE" > "${SETTINGS_FILE}.tmp"
   fi
   mv "${SETTINGS_FILE}.tmp" "$SETTINGS_FILE"
@@ -56,3 +64,4 @@ echo "Config: $HOOKS_DIR/notify.conf"
 echo "  MODE=sound|banner|both  (default: sound)"
 echo "  SOUND=Ping|Glass|Pop|Hero|...  (default: Ping)"
 echo "  DEBOUNCE=3  (seconds, default: 3)"
+echo "  ONLY_WHEN_UNFOCUSED=true|false  (default: true)"

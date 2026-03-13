@@ -13,6 +13,15 @@ Get notified when Claude Code finishes responding — with sound, notification b
   <img src="demo.svg" alt="claude-code-notify demo" width="820">
 </p>
 
+## Features
+
+- **Smart debounce** — only notifies when Claude is truly done, not between tool calls
+- **Focus detection** — stays silent when your terminal is focused
+- **Rich banners** — Claude icon, elapsed time, title/subtitle via `terminal-notifier`
+- **Elapsed time** — shows how long the response took ("Completed in 45s")
+- **Zero config** — works out of the box, customize if you want
+- **Fallback** — uses basic `osascript` if `terminal-notifier` isn't installed
+
 ## Why this one?
 
 Other notification tools require Go binaries, Rust compilation, or dozens of config files. This is **one bash script** with smart debounce — it just works.
@@ -24,6 +33,7 @@ Other notification tools require Go binaries, Rust compilation, or dozens of con
 | Size | Single bash script | Full binary or multi-file projects |
 | Debounce | Built-in (no false pings mid-response) | Most lack this |
 | Focus detection | Skips notification if terminal is focused | Not available |
+| Rich banners | Claude icon + elapsed time | Plain text |
 | Config | One file, 4 options | YAML/TOML/JSON configs |
 
 ## Install
@@ -33,6 +43,8 @@ git clone https://github.com/yagcioglutoprak/claude-code-notify.git /tmp/claude-
 ```
 
 Restart Claude Code. Done.
+
+The installer will auto-install `terminal-notifier` via Homebrew for rich notification banners. If Homebrew isn't available, it falls back to basic macOS notifications.
 
 ## Configure
 
@@ -56,7 +68,7 @@ ONLY_WHEN_UNFOCUSED=true
 | Mode | What you get |
 |---|---|
 | `sound` | System sound only (default) |
-| `banner` | macOS notification banner only |
+| `banner` | macOS notification banner with Claude icon + elapsed time |
 | `both` | Banner + sound |
 
 ## How it works
