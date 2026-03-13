@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 520" width="820" height="520">
+  <defs>
+    <style>
+      .terminal-bg { fill: #1a1b26; }
+      .terminal-border { fill: none; stroke: #2a2b3d; stroke-width: 1; }
+      .title-bar { fill: #16161e; }
+      .title-text { fill: #565f89; font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Menlo, Consolas, monospace; font-size: 12px; text-anchor: middle; }
+      .dot-red { fill: #f7768e; }
+      .dot-yellow { fill: #e0af68; }
+      .dot-green { fill: #9ece6a; }
+      .prompt { fill: #7aa2f7; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .command { fill: #c0caf5; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .response { fill: #a9b1d6; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .dim { fill: #565f89; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .green { fill: #9ece6a; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .orange { fill: #ff9e64; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .purple { fill: #bb9af7; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .cyan { fill: #7dcfff; font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace; font-size: 13.5px; }
+      .notif-title { fill: #e0e0e0; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 13px; font-weight: 700; }
+      .notif-body { fill: #b0b0b0; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 12px; }
+      .notif-app { fill: #888; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; letter-spacing: 0.3px; }
+    </style>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+    <filter id="notif-shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background behind terminal for contrast -->
+  <rect width="820" height="520" fill="#0f0f17" rx="0"/>
+
+  <!-- Terminal window -->
+  <rect class="terminal-bg" x="30" y="30" width="760" height="460" rx="10"/>
+  <rect class="terminal-border" x="30" y="30" width="760" height="460" rx="10"/>
+
+  <!-- Title bar -->
+  <rect class="title-bar" x="30" y="30" width="760" height="36" rx="10"/>
+  <rect class="title-bar" x="30" y="56" width="760" height="10"/>
+  <line x1="30" y1="66" x2="790" y2="66" stroke="#2a2b3d" stroke-width="1"/>
+
+  <!-- Traffic lights -->
+  <circle class="dot-red" cx="56" cy="48" r="6"/>
+  <circle class="dot-yellow" cx="78" cy="48" r="6"/>
+  <circle class="dot-green" cx="100" cy="48" r="6"/>
+  <text class="title-text" x="410" y="53">claude -- zsh -- 80x24</text>
+
+  <!-- ============================================================ -->
+  <!-- ANIMATED TERMINAL CONTENT                                     -->
+  <!-- All animations use begin="loop.begin+Xs" to enable looping   -->
+  <!-- ============================================================ -->
+
+  <!-- Invisible element that drives the animation loop (14s cycle) -->
+  <rect width="0" height="0">
+    <animate id="loop" attributeName="x" from="0" to="0" dur="14s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Line 1: Shell prompt + claude command -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.02;0.025;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="50" y="96">~/project</text>
+    <text class="prompt" x="140" y="96"> $</text>
+    <text class="command" x="160" y="96">claude</text>
+  </g>
+
+  <!-- Line 2-3: Claude Code banner -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.07;0.085;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="purple" x="50" y="128" font-weight="bold">Claude Code</text>
+    <text class="dim" x="170" y="128">v1.0.32</text>
+  </g>
+
+  <!-- Separator -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.085;0.095;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="50" y="150">───────────────────────────────────────────</text>
+  </g>
+
+  <!-- User prompt -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.13;0.15;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="orange" x="50" y="180">></text>
+    <text class="command" x="68" y="180">Refactor the auth middleware to use JWT</text>
+  </g>
+
+  <!-- Thinking indicator (appears then disappears) -->
+  <g>
+    <animate attributeName="opacity" values="0;0;0.6;0.6;0;0" keyTimes="0;0.18;0.2;0.27;0.28;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="68" y="210">Thinking...</text>
+  </g>
+
+  <!-- Response line 1 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.28;0.3;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="response" x="68" y="210">I'll refactor the auth middleware to use JWT.</text>
+  </g>
+
+  <!-- Response line 2 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.31;0.33;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="response" x="68" y="232">Here's what I'll change:</text>
+  </g>
+
+  <!-- Numbered list item 1 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.34;0.36;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="68" y="260">1.</text>
+    <text class="response" x="92" y="260">Replace session tokens with signed JWTs</text>
+  </g>
+
+  <!-- Numbered list item 2 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.36;0.38;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="68" y="282">2.</text>
+    <text class="response" x="92" y="282">Add token verification in middleware</text>
+  </g>
+
+  <!-- Numbered list item 3 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.38;0.4;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="68" y="304">3.</text>
+    <text class="response" x="92" y="304">Update refresh token rotation logic</text>
+  </g>
+
+  <!-- File edit block 1 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.42;0.44;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <rect x="58" y="320" width="700" height="24" rx="4" fill="#1e2030" stroke="#313244" stroke-width="1"/>
+    <text class="cyan" x="70" y="337">Edit</text>
+    <text class="dim" x="110" y="337">src/middleware/auth.ts</text>
+    <text class="green" x="700" y="337" font-size="11">+47 -23</text>
+  </g>
+
+  <!-- File edit block 2 -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.44;0.46;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <rect x="58" y="350" width="700" height="24" rx="4" fill="#1e2030" stroke="#313244" stroke-width="1"/>
+    <text class="cyan" x="70" y="367">Edit</text>
+    <text class="dim" x="110" y="367">src/utils/jwt.ts</text>
+    <text class="green" x="700" y="367" font-size="11">+82 -0</text>
+  </g>
+
+  <!-- Done message -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.48;0.5;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="green" x="68" y="402" font-weight="bold">Done.</text>
+    <text class="response" x="120" y="402">Auth middleware now uses JWT. All tests passing.</text>
+  </g>
+
+  <!-- Cost / duration line -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.5;0.52;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="dim" x="68" y="424" font-size="12">Cost: $0.04  |  Duration: 12s</text>
+  </g>
+
+  <!-- New prompt line with cursor -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;1;1;0" keyTimes="0;0.52;0.54;0.9;0.92;1" dur="14s" repeatCount="indefinite"/>
+    <text class="orange" x="50" y="456">></text>
+    <!-- Blinking cursor -->
+    <rect x="68" y="443" width="8" height="16" rx="1" fill="#c0caf5">
+      <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.49;0.5;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- NOTIFICATION BANNER                                           -->
+  <!-- Slides in from top-right, holds, then slides/fades out        -->
+  <!-- ============================================================ -->
+  <g filter="url(#notif-shadow)">
+    <!-- Opacity: fade in at 54%, hold, fade out at 82% -->
+    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.53;0.56;0.78;0.84;1" dur="14s" repeatCount="indefinite"/>
+    <!-- Slide: from above into position, then slide back up to exit -->
+    <animateTransform attributeName="transform" type="translate"
+      values="0,-90;0,-90;0,0;0,0;0,-90;0,-90"
+      keyTimes="0;0.53;0.565;0.78;0.84;1"
+      dur="14s" repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0 0 1 1;0.22 1 0.36 1;0 0 1 1;0.55 0.05 0.68 0.53;0 0 1 1"/>
+
+    <!-- Notification card background -->
+    <rect x="498" y="8" width="300" height="76" rx="14" fill="#2c2c2e" opacity="0.97"/>
+    <rect x="498" y="8" width="300" height="76" rx="14" fill="url(#glass)"/>
+    <rect x="498" y="8" width="300" height="76" rx="14" fill="none" stroke="#444" stroke-width="0.5" opacity="0.5"/>
+
+    <!-- App icon (terminal-style) -->
+    <rect x="514" y="22" width="44" height="44" rx="10" fill="#1a1b26"/>
+    <rect x="514" y="22" width="44" height="44" rx="10" fill="none" stroke="#3a3a4a" stroke-width="0.5"/>
+    <!-- Terminal prompt icon -->
+    <text x="524" y="50" fill="#7aa2f7" font-family="'SF Mono', Menlo, monospace" font-size="22" font-weight="bold">>_</text>
+
+    <!-- Text content -->
+    <text class="notif-app" x="570" y="34">TERMINAL</text>
+    <text x="680" y="34" fill="#666" font-family="-apple-system, sans-serif" font-size="10" text-anchor="end">now</text>
+    <text class="notif-title" x="570" y="52">Claude Code</text>
+    <text class="notif-body" x="570" y="68">Claude finished responding</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- SOUND WAVE ARCS (appear briefly when notification arrives)    -->
+  <!-- ============================================================ -->
+  <g>
+    <animate attributeName="opacity" values="0;0;0.7;0;0" keyTimes="0;0.55;0.58;0.65;1" dur="14s" repeatCount="indefinite"/>
+    <path d="M 490 46 Q 484 36, 490 26" stroke="#7aa2f7" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 484 50 Q 475 36, 484 22" stroke="#7aa2f7" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 478 54 Q 466 36, 478 18" stroke="#7aa2f7" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.3"/>
+  </g>
+
+  <!-- Ping text that flashes briefly (optional flair) -->
+  <g>
+    <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.555;0.57;0.62;1" dur="14s" repeatCount="indefinite"/>
+    <text x="460" y="40" fill="#7aa2f7" font-family="'SF Mono', Menlo, monospace" font-size="11" font-weight="bold" opacity="0.8">Ping!</text>
+  </g>
+</svg>
