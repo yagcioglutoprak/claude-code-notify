@@ -9,6 +9,12 @@
 
 Get notified when Claude Code finishes responding — with sound, notification banner, or both.
 
+## Install
+
+```bash
+git clone https://github.com/yagcioglutoprak/claude-code-notify.git /tmp/claude-code-notify && /tmp/claude-code-notify/install.sh && rm -rf /tmp/claude-code-notify
+```
+
 <p align="center">
   <img src="demo.svg" alt="claude-code-notify demo" width="820">
 </p>
@@ -36,11 +42,7 @@ Other notification tools require Go binaries, Rust compilation, or dozens of con
 | Rich banners | Claude icon + elapsed time | Plain text |
 | Config | One file, 4 options | YAML/TOML/JSON configs |
 
-## Install
 
-```bash
-git clone https://github.com/yagcioglutoprak/claude-code-notify.git /tmp/claude-code-notify && /tmp/claude-code-notify/install.sh && rm -rf /tmp/claude-code-notify
-```
 
 Restart Claude Code. Done.
 
